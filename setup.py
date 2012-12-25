@@ -14,6 +14,7 @@ setup(
   long_description=open("README").read(),
   install_requires = [
     'flask',
+    'alembic',
   ],
   license = 'BSD',
   classifiers = [
