@@ -4,14 +4,14 @@ Kraller
 An application to allow signups for accounts on a server with a key.
 """
 
-from flask import Flask
+from flask import Flask, render_template
 
 app = Flask(__name__)
 
 
 @app.route('/')
 def index():
-    return 'Hello from ACM@CWRU'
+    return render_template('index.tmpl')
 
 
 """
