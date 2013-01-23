@@ -6,6 +6,7 @@ shells = {
 }
 
 # TODO: Validate that GECOS can never have commas
+# TODO: usernames should be [a-z0-9]
 
 def create_user(username, full_name, room_number, work_phone, home_phone, ssh_key): 
     gecos = ','.join([full_name, room_number, work_phone, home_phone])
