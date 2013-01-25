@@ -1,0 +1,5 @@
+#!/bin/bash
+
+umask 077
+[ -d ~/.ssh ] || mkdir ~/.ssh
+cat >> ~/.ssh/authorized_keys
