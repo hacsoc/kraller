@@ -1,5 +1,4 @@
-import StringIO
-import subprocess
+from subprocess import PIPE, Popen, call
 
 shells = {
    'bash': '/bin/bash',
@@ -12,12 +11,15 @@ shells = {
 
 def create_user(username, full_name, room_number, work_phone, home_phone):
     gecos = ','.join([full_name, room_number, work_phone, home_phone])
-    return subprocess.call(['sudo', 'adduser', '--disabled-password', '--quiet', '--gecos', gecos, '--ingroup', 'users', username])
+    return call(['sudo', 'adduser', '--disabled-password', '--quiet', '--gecos', gecos, '--ingroup', 'users', username])
 
 def add_ssh_key(username, ssh_key):
     #TODO validate ssh keys
-    ssh_key_file = StringIO.StringIO(ssh_key)
-    return subprocess.call(['sudo', '-H', '-u', username, '/usr/local/bin/add_ssh_key'], stdin=ssh_key_file)
+    s = Popen(['sudo', '-H', '-u', username, '/usr/local/bin/add_ssh_key'], stdin=PIPE)
+    s.stdin.write(ssh_key + "\n")
+    s.stdin.close()
+    return s.wait()
+     
 
 def change_gecos(username, gecos):
     return subprocess.call(['sudo', 'usermod', '-c', gecos, username])
