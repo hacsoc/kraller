@@ -15,7 +15,7 @@ def try_getpwnam(name):
 
 def create_user(username, full_name, room_number, work_phone, home_phone):
     gecos = ','.join([full_name, room_number, work_phone, home_phone])
-    return call(['sudo', 'adduser', '--disabled-password', '--quiet', '--gecos', gecos, '--ingroup', 'users', username])
+    return call(['sudo', '-n', '/usr/local/sbin/kraller_adduser', gecos, username])
 
 def add_ssh_key(username, ssh_key):
     #TODO validate ssh keys

@@ -7,6 +7,9 @@ Installation
 ------------
 Instructions to come!
 
+kraller ALL=(root)NOPASSWD:/usr/local/sbin/kraller_adduser,/usr/sbin/usermod
+kraller ALL=(%users)NOPASSWD:/usr/local/bin/add_ssh_key
+
 Running
 -------
 Instructions to come!
