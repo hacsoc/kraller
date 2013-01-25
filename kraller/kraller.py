@@ -16,7 +16,7 @@ from flask.ext.wtf import Form, BooleanField, TextField, TextAreaField, Required
 import requests
 
 from itsdangerous_session import ItsDangerousSessionInterface
-from user_management import create_user
+from user_management import create_user, add_ssh_key
 
 app = Flask(__name__)
 app.secret_key = 'hackme'
@@ -25,7 +25,7 @@ app.permanent_session_lifetime = timedelta(hours=2)
 
 cas_server_endpoint = 'https://login.case.edu/cas/'
 
-username_re = "[a-z0-9]"
+username_re = "[a-z]{3}[0-9]*"
 gecos_re = "[A-Za-z0-9.' ]"
 ssh_key_re = "[A-Za-z0-9/-@=+ ]"
 
@@ -50,10 +50,14 @@ def login():
         redirect_to = request.args.get('redirect_to')
         r = requests.get(cas_server_endpoint + 'validate', params=dict(service=my_cas_endpoint(redirect_to), ticket=ticket), verify=True)
         if not r.status_code == requests.codes.ok:
+            # TODO: do we have logging of any sort?
             return abort(500)
-        (answer, username) = r.text.split('\n', 1)
+        response_lines = r.text.splitlines()
+        if  len(response_lines) != 2:
+            return abort(500)
+        (answer, username) = response_lines
         if answer == 'yes':
-            #set cookie and redirect
+            # set cookie and redirect
             session['username'] = username
             return redirect(redirect_to)
     return abort(401)
@@ -61,7 +65,7 @@ def login():
 class SignupForm(Form):
     name = TextField('Full Name', [Required()])
     ssh_key = TextAreaField('SSH Key', [Required()])
-    accept_tos = BooleanField("I understand that my use of this server is bound by the <a href='http://google.com'>CWRU AUP</a>", [Required()])
+    accept_tos = BooleanField(None, [Required()])
 
 @app.route('/signup', methods=['GET', 'POST'])
 @requires_auth
@@ -71,13 +75,22 @@ def signup():
         username = session['username']
         name = form.name.data.strip()
         ssh_key = form.ssh_key.data.strip()
+
+        # before proceeding, check that all fields are sane
         if all([
             re.match(username_re, username),
             re.match(gecos_re, name),
             re.match(ssh_key_re, ssh_key)
         ]):
             # TODO: blacklist certain usernames
-            create_user(username, name, '', '', '', ssh_key)
+            if create_user(username, name, '', '', ''):
+                # TODO: do something when this fails.  but what?
+                pass
+
+            if add_ssh_key(username, ssh_key):
+                pass
+
+            return redirect('/signup_success')
 
     return render_template('register.tmpl', form=form)
 

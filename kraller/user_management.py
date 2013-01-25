@@ -1,3 +1,4 @@
+import StringIO
 import subprocess
 
 shells = {

@@ -14,6 +14,9 @@ setup(
   long_description=open("README").read(),
   install_requires = [
     'flask',
+    'flask-wtf',
+    'itsdangerous',
+    'requests',
     'alembic',
   ],
   license = 'BSD',
