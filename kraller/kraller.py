@@ -23,7 +23,7 @@ app.session_interface = ItsDangerousSessionInterface()
 
 username_re = "[a-z]{3}[0-9]*"
 gecos_re = "[A-Za-z0-9.' ]"
-ssh_key_re = "[A-Za-z0-9/-@=+ ]"
+ssh_key_re = "[A-Za-z0-9@: .\/=+-]"
 
 def my_cas_endpoint(redirect_to=None):
     if redirect_to is None:
