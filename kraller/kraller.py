@@ -16,7 +16,7 @@ from flask.ext.wtf import Form, BooleanField, TextField, TextAreaField, Required
 import requests
 
 from itsdangerous_session import ItsDangerousSessionInterface
-from user_management import create_user, add_ssh_key
+from user_management import create_user, add_ssh_key, try_getpwnam
 
 app = Flask(__name__)
 app.secret_key = 'hackme'
@@ -70,9 +70,12 @@ class SignupForm(Form):
 @app.route('/signup', methods=['GET', 'POST'])
 @requires_auth
 def signup():
+    username = session['username']
+    if try_getpwnam(username):
+        return 'You are already registered.'
+
     form = SignupForm()
     if form.validate_on_submit():
-        username = session['username']
         name = form.name.data.strip()
         ssh_key = form.ssh_key.data.strip()
 
@@ -91,8 +94,8 @@ def signup():
                 pass
 
             return redirect('/signup_success')
-
-    return render_template('register.tmpl', form=form)
+    else:
+        return render_template('register.tmpl', form=form)
 
 """
 Don't invoke this directly in production.  This is for development only.

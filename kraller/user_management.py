@@ -1,3 +1,4 @@
+from pwd import getpwnam
 from subprocess import PIPE, Popen, call
 
 shells = {
@@ -6,8 +7,11 @@ shells = {
    'tmux': '/usr/bin/tmux'
 }
 
-# TODO: Validate that GECOS can never have commas
-# TODO: usernames should be [a-z0-9]
+def try_getpwnam(name):
+    try:
+        return getpwnam(name)
+    except KeyError:
+        return None
 
 def create_user(username, full_name, room_number, work_phone, home_phone):
     gecos = ','.join([full_name, room_number, work_phone, home_phone])
