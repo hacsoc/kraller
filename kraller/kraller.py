@@ -111,7 +111,7 @@ def signup():
     else:
         return render_template('signup.tmpl', form=form)
 
-@app.route('/add_key')
+@app.route('/add_key', methods=['POST'])
 @requires_auth
 def add_key():
     pass
