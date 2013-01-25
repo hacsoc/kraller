@@ -34,13 +34,16 @@ def my_cas_endpoint(redirect_to=None):
         redirect_to = request.path
     return url_for('login', redirect_to=redirect_to, _external=True)
 
+def cas_login_url():
+    return cas_server_endpoint + 'login?' + urlencode(dict(service=my_cas_endpoint(), renew='true'))
+
 def requires_auth(f):
-    wraps(f)
+    @wraps(f)
     def decorated(*args, **kwargs):
         if 'username' in session:
             return f(*args, **kwargs)
         else:
-            return redirect(cas_server_endpoint + 'login?' + urlencode(dict(service=my_cas_endpoint(), renew='true')))
+            return redirect(cas_login_url())
     return decorated
 
 @app.route('/login')
@@ -62,12 +65,28 @@ def login():
             return redirect(redirect_to)
     return abort(401)
 
+@app.route('/')
+def index():
+    if 'username' in session:
+        username = session['username']
+        # the user is logged in
+        if not try_getpwnam(username):
+            # the user doesn't yet have an account
+            form = SignupForm()
+            return render_template('signup.tmpl', form=form)
+        else:
+            # the user already has an account
+            return render_template('add_key.tmpl')
+    else:
+        # the user needs to log in
+        return render_template('login.tmpl', cas_server=cas_login_url())
+
 class SignupForm(Form):
     name = TextField('Full Name', [Required()])
     ssh_key = TextAreaField('SSH Key', [Required()])
     accept_tos = BooleanField(None, [Required()])
 
-@app.route('/signup', methods=['GET', 'POST'])
+@app.route('/signup', methods=['POST'])
 @requires_auth
 def signup():
     username = session['username']
@@ -87,15 +106,19 @@ def signup():
         ]):
             # TODO: blacklist certain usernames
             if create_user(username, name, '', '', ''):
-                # TODO: do something when this fails.  but what?
-                pass
+                return 'Error creating user'
 
             if add_ssh_key(username, ssh_key):
-                pass
+                return 'Error adding ssh key'
 
-            return redirect('/signup_success')
+            return 'Success'
     else:
-        return render_template('register.tmpl', form=form)
+        return render_template('signup.tmpl', form=form)
+
+@app.route('/add_key')
+@requires_auth
+def add_key():
+    pass
 
 """
 Don't invoke this directly in production.  This is for development only.
