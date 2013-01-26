@@ -12,12 +12,5 @@ kraller ALL=(%users)NOPASSWD:/usr/local/bin/add_ssh_key
 
 Running
 -------
-Instructions to come!
-
-Testing
--------
-Instructions to come!
-
-Examples
---------
-Examples to come!
+Call the kraller/kraller.py directly during development.  Set it up on Gunicorn
+or something similar in production.
