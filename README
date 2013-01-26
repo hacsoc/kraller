@@ -5,7 +5,7 @@ A little application to allow signups with keys for accounts on the cwru acm ser
 
 Installation
 ------------
-Instructions to come!
+`pip install -e .` from the top level of the project that contains setup.py
 
 kraller ALL=(root)NOPASSWD:/usr/local/sbin/kraller_adduser,/usr/sbin/usermod
 kraller ALL=(%users)NOPASSWD:/usr/local/bin/add_ssh_key
@@ -14,3 +14,8 @@ Running
 -------
 Call the kraller/kraller.py directly during development.  Set it up on Gunicorn
 or something similar in production.
+
+KRALLER_SETTINGS must be set in the shell and point to a file containing
+CAS_SERVER_ENDPOINT = '<endpoint>' where <endpoint> is something along the lines
+of https://login.case.edu/cas/.  In addition, it should contain a SECRET_KEY for
+use by the session.  DO NOT LET ANYONE KNOW WHAT THAT SECRET IS.
