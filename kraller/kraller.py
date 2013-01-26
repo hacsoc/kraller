@@ -26,13 +26,16 @@ username_re = "[a-z]{3}[0-9]*"
 gecos_re = "[A-Za-z0-9.' ]"
 ssh_key_re = "[A-Za-z0-9@: .\/=+-]"
 
+
 def my_cas_endpoint(redirect_to=None):
     if redirect_to is None:
         redirect_to = request.path
     return url_for('login', redirect_to=redirect_to, _external=True)
 
+
 def cas_login_url():
     return app.config['CAS_SERVER_ENDPOINT'] + 'login?' + urlencode(dict(service=my_cas_endpoint(), renew='true'))
+
 
 def requires_auth(f):
     @wraps(f)
@@ -42,6 +45,7 @@ def requires_auth(f):
         else:
             return redirect(cas_login_url())
     return decorated
+
 
 @app.route('/login')
 def login():
@@ -53,7 +57,7 @@ def login():
             # TODO: do we have logging of any sort?
             return abort(500)
         response_lines = r.text.splitlines()
-        if  len(response_lines) != 2:
+        if len(response_lines) != 2:
             return abort(500)
         (answer, username) = response_lines
         if answer == 'yes':
@@ -61,6 +65,7 @@ def login():
             session['username'] = username
             return redirect(redirect_to)
     return abort(401)
+
 
 @app.route('/')
 def index():
@@ -78,10 +83,12 @@ def index():
         # the user needs to log in
         return render_template('login.tmpl', cas_server=cas_login_url())
 
+
 class SignupForm(Form):
     name = TextField('Full Name', [Required()])
     ssh_key = TextAreaField('SSH Key', [Required()])
     accept_tos = BooleanField(None, [Required()])
+
 
 @app.route('/signup', methods=['POST'])
 @requires_auth
@@ -112,10 +119,12 @@ def signup():
     else:
         return render_template('signup.tmpl', form=form)
 
+
 @app.route('/add_key', methods=['POST'])
 @requires_auth
 def add_key():
     pass
+
 
 """
 Don't invoke this directly in production.  This is for development only.

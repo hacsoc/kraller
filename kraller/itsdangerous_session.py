@@ -19,7 +19,7 @@ class ItsDangerousSessionInterface(SessionInterface):
     def get_serializer(self, app):
         if not app.secret_key:
             return None
-        return URLSafeTimedSerializer(app.secret_key, 
+        return URLSafeTimedSerializer(app.secret_key,
                                       salt=self.salt)
 
     def open_session(self, app, request):
@@ -40,8 +40,7 @@ class ItsDangerousSessionInterface(SessionInterface):
         domain = self.get_cookie_domain(app)
         if not session:
             if session.modified:
-                response.delete_cookie(app.session_cookie_name,
-                                   domain=domain)
+                response.delete_cookie(app.session_cookie_name, domain=domain)
             return
         expires = self.get_expiration_time(app, session)
         val = self.get_serializer(app).dumps(dict(session))
