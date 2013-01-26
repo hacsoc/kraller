@@ -47,6 +47,10 @@ def requires_auth(f):
     return decorated
 
 
+def in_blacklist(name):
+    return name in set(map(lambda x: x.strip(), open(app.config['BLACKLIST_FILE']).readlines()))
+
+
 @app.route('/login')
 def login():
     if 'ticket' in request.args and 'redirect_to' in request.args:
@@ -108,7 +112,9 @@ def signup():
             re.match(gecos_re, name),
             re.match(ssh_key_re, ssh_key)
         ]):
-            # TODO: blacklist certain usernames
+            if in_blacklist(username):
+                return 'Error creating user: user blacklisted!'
+
             if create_user(username, name, '', '', ''):
                 return 'Error creating user'
 
