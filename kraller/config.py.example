@@ -1,0 +1,3 @@
+CAS_SERVER_ENDPOINT = 'https://login.case.edu/cas/'
+SECRET_KEY = 'this is a super duper secret!'
+BLACKLIST_FILE = '/path/to/bad_people.txt'

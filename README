@@ -22,3 +22,6 @@ use by the session.  DO NOT LET ANYONE KNOW WHAT THAT SECRET IS.  Finally, it
 should have a BLACKLIST_FILE field giving the full path to a file containing a
 list of blacklisted users.  That list should have one user per line, where a user
 is a caseid _without_ @case.edu.
+
+
+There is an example config file called config.py.example in the kraller directory.
