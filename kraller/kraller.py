@@ -34,7 +34,7 @@ def my_cas_endpoint(redirect_to=None):
 
 
 def cas_login_url():
-    return app.config['CAS_SERVER_ENDPOINT'] + 'login?' + urlencode(dict(service=my_cas_endpoint(), renew='true'))
+    return app.config['CAS_SERVER_ENDPOINT'] + 'login?' + urlencode(dict(service=my_cas_endpoint('signup'), renew='true'))
 
 
 def requires_auth(f):
@@ -73,19 +73,7 @@ def login():
 
 @app.route('/')
 def index():
-    if 'username' in session:
-        username = session['username']
-        # the user is logged in
-        if not try_getpwnam(username):
-            # the user doesn't yet have an account
-            form = SignupForm()
-            return render_template('signup.tmpl', form=form)
-        else:
-            # the user already has an account
-            return render_template('add_key.tmpl')
-    else:
-        # the user needs to log in
-        return render_template('login.tmpl', cas_server=cas_login_url())
+    return render_template('index.tmpl', cas_server=cas_login_url())
 
 
 class SignupForm(Form):
@@ -94,9 +82,21 @@ class SignupForm(Form):
     accept_tos = BooleanField(None, [Required()])
 
 
-@app.route('/signup', methods=['POST'])
+@app.route('/signup', methods=['GET', 'POST'])
 @requires_auth
 def signup():
+    if request.method == 'POST':
+        if 'username' in session:
+            username = session['username']
+            # the user is logged in
+            if not try_getpwnam(username):
+                # the user doesn't yet have an account
+                form = signupform()
+                return render_template('signup.tmpl', form=form)
+            else:
+                # the user already has an account
+                return render_template('add_key.tmpl')
+
     username = session['username']
     if try_getpwnam(username):
         return 'You are already registered.'
