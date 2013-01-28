@@ -119,6 +119,7 @@ def signup():
         if all([
             re.match(username_re, username),
             re.match(gecos_re, name),
+            re.match(gecos_re, phone),
             re.match(ssh_key_re, ssh_key)
         ]):
             if in_blacklist(username):
