@@ -1,0 +1,74 @@
+.bighead {
+    padding: 60px;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    background: -webkit-gradient(linear, 0% 0%, 100% 100%, color-stop(0%, rgba(55, 109, 184, 0.65)), color-stop(100%, rgba(255, 0, 0, 0.05))) no-repeat center center fixed, url('grid.png');
+    background: -webkit-linear-gradient(top left, rgba(55, 109, 184, 0.65), rgba(255, 0, 0, 0.05)) no-repeat center center fixed, url('grid.png');
+    background: -moz-linear-gradient(top left, rgba(55, 109, 184, 0.65), rgba(255, 0, 0, 0.05)) no-repeat center center fixed, url('grid.png');
+    background: -o-linear-gradient(top left, rgba(55, 109, 184, 0.65), rgba(255, 0, 0, 0.05)) no-repeat center center fixed, url('grid.png');
+    background: -ms-linear-gradient(top left, rgba(55, 109, 184, 0.65), rgba(255, 0, 0, 0.05)) no-repeat center center fixed, url('grid.png');
+    background: linear-gradient(top left, rgba(55, 109, 184, 0.65), rgba(255, 0, 0, 0.05)) no-repeat center center fixed, url('grid.png');
+    box-shadow: inset 9px 1px 70px #333, 0 0 25px #000;
+    border-bottom: 2px #333 solid;
+    margin-bottom: 30px;
+    color: #fff;
+    text-shadow: #222222 -2px -2px 2px;
+    letter-spacing: 2px;
+    font-family: 'CabinRegular';
+}
+
+.bighead h1 {
+    font-size: 60px;
+}
+
+.bighead h2 {
+    font-size: 30px;
+}
+
+.bighead h2 small {
+    color: #eee;
+    font-size: 20px;
+}
+
+@media (max-width: 767px) {
+
+    .bighead {
+        background: none;
+        box-shadow: none;
+        text-shadow: none;
+        border-bottom: none;
+        padding: 10px;
+        margin-bottom: 5px;
+    }
+
+    .bighead h1 {
+        color: #333;
+        font-size: 40px;
+    }
+
+    .bighead h2 {
+        color: #333;
+        font-size: 25px;
+    }
+
+    .bighead h2 small {
+        color: #444;
+        font-size: 18px;
+    }
+
+}
+
+.atfix {
+    /* because cabin has a stupid looking @ */
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+@font-face {
+  font-family: 'CabinRegular';
+  src: url("/static/Cabin-Regular-webfont.eot");
+  src: url("/static/Cabin-Regular-webfont.eot?#iefix") format("embedded-opentype"), url("/static/Cabin-Regular-webfont.woff") format("woff"), url("/static/Cabin-Regular-webfont.ttf") format("truetype"), url("/static/Cabin-Regular-webfont.svg#CabinRegular") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}

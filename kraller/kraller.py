@@ -10,7 +10,7 @@ from functools import wraps
 import re
 from urllib import urlencode
 
-from flask import Flask, abort, render_template, redirect, request, session, url_for
+from flask import Flask, abort, render_template, redirect, request, session, url_for, flash
 from flask.ext.wtf import Form, BooleanField, TextField, TextAreaField, Required
 import requests
 
@@ -85,13 +85,13 @@ class SignupForm(Form):
 @app.route('/signup', methods=['GET', 'POST'])
 @requires_auth
 def signup():
-    if request.method == 'POST':
+    if request.method == 'GET':
         if 'username' in session:
             username = session['username']
             # the user is logged in
             if not try_getpwnam(username):
                 # the user doesn't yet have an account
-                form = signupform()
+                form = SignupForm()
                 return render_template('signup.tmpl', form=form)
             else:
                 # the user already has an account
@@ -113,16 +113,17 @@ def signup():
             re.match(ssh_key_re, ssh_key)
         ]):
             if in_blacklist(username):
-                return 'Error creating user: user blacklisted!'
+                flash('You are blacklisted.')
 
             if create_user(username, name, '', '', ''):
-                return 'Error creating user'
+                flash('There was an error creating that user.')
 
             if add_ssh_key(username, ssh_key):
-                return 'Error adding ssh key'
+                flash('Something went wrong when adding that ssh key.')
 
-            return 'Success'
+            return render_template('signup.tmpl', form=form)
     else:
+        flash('There was an error submitting the form!')
         return render_template('signup.tmpl', form=form)
 
 

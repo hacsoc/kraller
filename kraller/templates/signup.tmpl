@@ -1,14 +1,36 @@
-<form method="POST" action="/signup">
-    {{ form.csrf_token }}
-    {{ form.name.label }} {{ form.name(size=20) }}<br />
-    {{ form.ssh_key.label }} {{ form.ssh_key }}<br />
+{% extends "layout.tmpl" %}
 
-    {{ form.accept_tos }}
-    <label for='{{ form.accept_tos.id }}'>
-        I understand that my use of this server is bound by the CWRU
-        <a href='http://www.case.edu/its/policy/acceptable-use-policy.html'>acceptable use</a> and
-        <a href='http://www.case.edu/provost/ugstudies/acintegrity.htm'>academic integrity</a> policies.
-    </label>
-    <br />
-    <input type="submit" value="Go">
-</form>
+{% block whatdo %}Sign up here!{% endblock %}
+
+{% block body %}
+<div class="container">
+    <form method="POST" action="/signup">
+        {{ form.csrf_token }}
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-error"><strong>Uh oh.</strong> {{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <fieldset>
+        <legend>Basic Info</legend>
+        {{ form.name.label }} {{ form.name(size=20) }}
+        TODO: ADD PHONE HERE
+        </fieldset>
+        <fieldset>
+        <legend>SSH</legend>
+        {{ form.ssh_key.label }} {{ form.ssh_key }}
+        </fieldset>
+        <fieldset>
+        <label class="checkbox" for='{{ form.accept_tos.id }}'>
+            {{ form.accept_tos }}
+            I understand that my use of this server is bound by the CWRU
+            <a href='http://www.case.edu/its/policy/acceptable-use-policy.html'>acceptable use</a> and
+            <a href='http://www.case.edu/provost/ugstudies/acintegrity.htm'>academic integrity</a> policies.
+        </label>
+        <input class="btn" type="submit" value="Submit Credentials">
+        </fieldset>
+    </form>
+</div>
+{% endblock %}

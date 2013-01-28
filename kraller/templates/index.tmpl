@@ -1,13 +1,22 @@
 {% extends "layout.tmpl" %}
 
 {% block body %}
-<h1>Welcome to ACM@CWRU's People Server</h1>
-
-<p>This service will allow you to sign up for an account on the people server.
-This will allot you a certain amount of space and give you a ~ home on the web!</p>
-
-<p>You will need to have a valid CWRU account in order to complete this process.</p>
-
-<a href='{{ cas_server }}'>Sign up here!</a>
+<div class="container">
+    <div class="row">
+        <div class="span6">
+            <p class="lead">This service will allow you to sign up for an account on the people server.
+            This will allot you a certain amount of space and give you a ~ home on the web!</p>
+        </div>
+        <div class="span5 alert alert-block">
+            You will need to have a valid CWRU account in order to sign up for an account.
+        </div>
+        <div class="span5 alert alert-block">
+            You must have a public key in order to sign up for an account.
+        </div>
+        <div class="span12">
+        <a class="btn btn-primary btn-block btn-large" href='{{ cas_server }}'>Sign up here!</a>
+        </div>
+    </div>
+</div>
 
 {% endblock %}

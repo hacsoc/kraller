@@ -1,11 +1,21 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <title>ACM@CWRU People Server</title>
-    <link rel="stylesheet" src="/bootstrap.min.css"/>
-    <link rel="stylesheet" src="/bootstrap-responsive.min.css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="/static/bootstrap-responsive.min.css" type="text/css" />
+    <link rel="stylesheet" href="/static/local.css" type="text/css" />
   </head>
   <body>
+    <div>
+      <div class="bighead">
+          <div class="container">
+              <h1 class="hidden-phone">{% block whatdo %} Get Started! {% endblock %}</h1>
+              <h2><small>Welcome to the</small> ACM<span class="atfix">@</span>CWRU <small>People Server</small></h2>
+          </div>
+      </div>
+    </div>
     {% block body %}{% endblock %}
   </body>
 </html>
