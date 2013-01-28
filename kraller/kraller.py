@@ -85,7 +85,7 @@ def index():
 
 class SignupForm(Form):
     name = TextField('Full Name', [Required()])
-    phone = TextField('Phone Number', [Required()])
+    phone = TextField('Phone Number (optional)', [])
     ssh_key = TextAreaField('SSH Key', [Required()])
     accept_tos = BooleanField(None, [Required()])
 

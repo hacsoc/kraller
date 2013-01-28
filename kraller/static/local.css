@@ -76,6 +76,10 @@
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
+textarea {
+    width: 100%;
+}
+
 @font-face {
   font-family: 'CabinRegular';
   src: url("/static/Cabin-Regular-webfont.eot");
