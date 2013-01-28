@@ -32,6 +32,17 @@
     font-size: 20px;
 }
 
+.bighead .bottom {
+    height: 0px;
+    padding: 0px;
+    margin: 0px;
+    top: 38px;
+    float: right;
+    position: relative;
+    color: #fff;
+    text-decoration: none;
+}
+
 @media (max-width: 767px) {
 
     .bighead {

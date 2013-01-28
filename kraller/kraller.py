@@ -72,6 +72,15 @@ def login():
     return abort(401)
 
 
+@app.route('/logout')
+def logout():
+    try:
+        session.pop('username')
+    except:
+        pass
+    return redirect('/')
+
+
 @app.route('/')
 def index():
     return render_template('index.tmpl', cas_server=cas_login_url())
