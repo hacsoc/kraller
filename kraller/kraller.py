@@ -52,6 +52,9 @@ def logged_in_url(url):
 
 
 def requires_auth(f):
+    """decorates a url handler, requiring that the user be authenticated before
+    seeing it."""
+
     @wraps(f)
     def decorated(*args, **kwargs):
         if 'username' in session:
