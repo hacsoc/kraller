@@ -23,9 +23,9 @@ app = Flask(__name__)
 app.config.from_envvar('KRALLER_SETTINGS')
 app.session_interface = ItsDangerousSessionInterface()
 
-username_re = "[a-z]{3}[0-9]*"
-gecos_re = "[A-Za-z0-9.' ()+-]"
-ssh_key_re = "[A-Za-z0-9@: .\/=+-]"
+username_re = "^[a-z]{3}[0-9]*$"
+gecos_re = "^[A-Za-z0-9.' ()+-]*$"
+ssh_key_re = "^[A-Za-z0-9@: .\/=+-]*$"
 
 def my_cas_endpoint(redirect_to=None):
     """returns the URL that should be passed to the CAS server under the
