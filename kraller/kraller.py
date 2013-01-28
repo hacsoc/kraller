@@ -90,6 +90,9 @@ def login():
         # set cookie and redirect
         session['username'] = username
         return redirect(redirect_to)
+    else:
+        logging.warning('CAS repudiated a ticket we got from the user')
+        abort(401)
 
 
 @app.route('/logout')
