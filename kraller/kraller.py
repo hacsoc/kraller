@@ -8,6 +8,7 @@ An application to allow signups for accounts on a server with a key.
 
 from functools import wraps
 import logging
+from logging.handlers import SMTPHandler
 import os
 import re
 from urllib import urlencode
@@ -22,6 +23,11 @@ from user_management import create_user, add_ssh_key, try_getpwnam
 app = Flask(__name__)
 app.config.from_envvar('KRALLER_SETTINGS')
 app.session_interface = ItsDangerousSessionInterface()
+
+if not app.debug:
+    mail_handler = SMTPHandler('127.0.0.1', 'kraller@acm-people.cwru.edu', ['root'], 'kraller log')
+    mail_handler.setLevel(logging.WARNING)
+    app.logger.addHandler(mail_handler)
 
 username_re = "^[a-z]{3}[0-9]*$"
 gecos_re = "^[A-Za-z0-9.' ()+-]*$"
@@ -77,12 +83,12 @@ def login():
     redirect_to = request.args.get('redirect_to')
     r = requests.get(app.config['CAS_SERVER_ENDPOINT'] + 'validate', params=dict(service=my_cas_endpoint(redirect_to), ticket=ticket), verify=True)
     if not r.status_code == requests.codes.ok:
-        logging.warning('Got bad response code from CAS validate endpoint')
+        app.logger.warning('Got bad response code from CAS validate endpoint')
         return abort(500)
 
     response_lines = r.text.splitlines()
     if len(response_lines) != 2:
-        logging.warning('Got malformed response from CAS validate endpoint')
+        app.logger.warning('Got malformed response from CAS validate endpoint')
         return abort(500)
 
     (answer, username) = response_lines
@@ -91,7 +97,7 @@ def login():
         session['username'] = username
         return redirect(redirect_to)
     else:
-        logging.warning('CAS repudiated a ticket we got from the user')
+        app.logger.warning('CAS repudiated a ticket we got from the user')
         abort(401)
 
 
@@ -153,7 +159,7 @@ def signup():
     if not all(valid.values()):
         if not valid['username']:
             flash("I don't like the look of your username.")
-            logging.warning('Username failed validation.  Why is this happening?')
+            app.logger.warning('Username failed validation.  Why is this happening?')
 
         if not valid['name']:
             flash("I prefer names consisting only of alphanumerics, apostrophes, and periods.")
@@ -168,16 +174,16 @@ def signup():
 
     if in_blacklist(username):
         flash('You are blacklisted.')
-        logging.warning('Blacklisted user attempted to sign up')
+        app.logger.warning('Blacklisted user attempted to sign up')
         return render_template('signup.tmpl', form=form)
 
     if create_user(username, name, '', '', phone):
         flash('There was an error creating a user account for you.')
-        logging.warning('Error creating user account')
+        app.logger.warning('Error creating user account')
         return render_template('signup.tmpl', form=form)
 
     if add_ssh_key(username, ssh_key):
-        logging.warning('Error adding ssh key')
+        app.logger.warning('Error adding ssh key')
         flash('Something went wrong when adding your ssh key.')
         return render_template('signup.tmpl', form=form)
 
