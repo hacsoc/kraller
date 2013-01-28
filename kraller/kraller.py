@@ -20,7 +20,6 @@ from user_management import create_user, add_ssh_key, try_getpwnam
 
 app = Flask(__name__)
 app.config.from_envvar('KRALLER_SETTINGS')
-app.secret_key = app.config['SECRET_KEY']
 app.session_interface = ItsDangerousSessionInterface()
 
 username_re = "[a-z]{3}[0-9]*"
