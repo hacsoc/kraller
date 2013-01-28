@@ -7,8 +7,9 @@ An application to allow signups for accounts on a server with a key.
 """
 
 from functools import wraps
-import re
+import logging
 import os
+import re
 from urllib import urlencode
 
 from flask import Flask, abort, render_template, redirect, request, session, url_for, flash, send_from_directory
@@ -129,6 +130,7 @@ def signup():
     if not all(valid.values()):
         if not valid['username']:
             flash("I don't like the look of your username.")
+            logging.warning('Username failed validation.  Why is this happening?')
 
         if not valid['name']:
             flash("I prefer names consisting only of alphanumerics, apostrophes, and periods.")
@@ -143,13 +145,16 @@ def signup():
 
     if in_blacklist(username):
         flash('You are blacklisted.')
+        logging.warning('Blacklisted user attempted to sign up')
         return render_template('signup.tmpl', form=form)
 
     if create_user(username, name, '', '', phone):
         flash('There was an error creating a user account for you.')
+        logging.warning('Error creating user account')
         return render_template('signup.tmpl', form=form)
 
     if add_ssh_key(username, ssh_key):
+        logging.warning('Error adding ssh key')
         flash('Something went wrong when adding your ssh key.')
         return render_template('signup.tmpl', form=form)
 
