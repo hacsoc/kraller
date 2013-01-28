@@ -1,0 +1,19 @@
+{% extends "layout.tmpl" %}
+
+{% block whatdo %}Yipee!{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-info"><strong>Hey!</strong> {{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <div class="hero-unit">
+        <h2>You've successfully signed up for an account on the server!</h2>
+        <p>Hop to it!  Get in your shell and login!</p>
+    </div>
+</div>
+{% endblock %}

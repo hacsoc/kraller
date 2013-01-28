@@ -8,6 +8,7 @@ An application to allow signups for accounts on a server with a key.
 
 from functools import wraps
 import re
+import os
 from urllib import urlencode
 
 from flask import Flask, abort, render_template, redirect, request, session, url_for, flash, send_from_directory
@@ -78,6 +79,7 @@ def index():
 
 class SignupForm(Form):
     name = TextField('Full Name', [Required()])
+    phone = TextField('Phone Number', [Required()])
     ssh_key = TextAreaField('SSH Key', [Required()])
     accept_tos = BooleanField(None, [Required()])
 
@@ -99,11 +101,13 @@ def signup():
 
     username = session['username']
     if try_getpwnam(username):
-        return 'You are already registered.'
+        flash('You are already registered.')
+        return render_template('success.tmpl')
 
     form = SignupForm()
     if form.validate_on_submit():
         name = form.name.data.strip()
+        phone = form.phone.data.strip()
         ssh_key = form.ssh_key.data.strip()
 
         # before proceeding, check that all fields are sane
@@ -115,13 +119,14 @@ def signup():
             if in_blacklist(username):
                 flash('You are blacklisted.')
 
-            if create_user(username, name, '', '', ''):
+            if create_user(username, name, '', '', phone):
                 flash('There was an error creating that user.')
 
             if add_ssh_key(username, ssh_key):
                 flash('Something went wrong when adding that ssh key.')
 
-            return render_template('signup.tmpl', form=form)
+            # Success!
+            return render_template('success.tmpl')
     else:
         flash('There was an error submitting the form!')
         return render_template('signup.tmpl', form=form)
