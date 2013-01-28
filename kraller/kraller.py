@@ -49,7 +49,7 @@ def requires_auth(f):
 
 
 def in_blacklist(name):
-    return name in set(map(lambda x: x.strip(), open(app.config['BLACKLIST_FILE']).readlines()))
+    return name in map(lambda x: x.strip(), open(app.config['BLACKLIST_FILE']).readlines())
 
 
 @app.route('/login')
@@ -74,10 +74,7 @@ def login():
 
 @app.route('/logout')
 def logout():
-    try:
-        session.pop('username')
-    except:
-        pass
+    session.pop('username', None)
     return redirect('/')
 
 
