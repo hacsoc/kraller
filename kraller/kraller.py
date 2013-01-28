@@ -74,11 +74,14 @@ def login():
     redirect_to = request.args.get('redirect_to')
     r = requests.get(app.config['CAS_SERVER_ENDPOINT'] + 'validate', params=dict(service=my_cas_endpoint(redirect_to), ticket=ticket), verify=True)
     if not r.status_code == requests.codes.ok:
-        # TODO: do we have logging of any sort?
+        logging.warning('Got bad response code from CAS validate endpoint')
         return abort(500)
+
     response_lines = r.text.splitlines()
     if len(response_lines) != 2:
+        logging.warning('Got malformed response from CAS validate endpoint')
         return abort(500)
+
     (answer, username) = response_lines
     if answer == 'yes':
         # set cookie and redirect
