@@ -23,7 +23,7 @@ app.config.from_envvar('KRALLER_SETTINGS')
 app.session_interface = ItsDangerousSessionInterface()
 
 username_re = "[a-z]{3}[0-9]*"
-gecos_re = "[A-Za-z0-9.' ]"
+gecos_re = "[A-Za-z0-9.' ()+-]"
 ssh_key_re = "[A-Za-z0-9@: .\/=+-]"
 
 
@@ -110,35 +110,51 @@ def signup():
         return render_template('success.tmpl')
 
     form = SignupForm()
-    if form.validate_on_submit():
-        name = form.name.data.strip()
-        phone = form.phone.data.strip()
-        ssh_key = form.ssh_key.data.strip()
-
-        # before proceeding, check that all fields are sane
-        if all([
-            re.match(username_re, username),
-            re.match(gecos_re, name),
-            re.match(gecos_re, phone),
-            re.match(ssh_key_re, ssh_key)
-        ]):
-            if in_blacklist(username):
-                flash('You are blacklisted.')
-                return render_template('signup.tmpl', form=form)
-
-            if create_user(username, name, '', '', phone):
-                flash('There was an error creating a user account for you')
-                return render_template('signup.tmpl', form=form)
-
-            if add_ssh_key(username, ssh_key):
-                flash('Something went wrong when adding your ssh key.')
-                return render_template('signup.tmpl', form=form)
-
-            # Success!
-            return render_template('success.tmpl')
-    else:
+    if not form.validate_on_submit():
         flash('There was an error submitting the form!')
         return render_template('signup.tmpl', form=form)
+
+    name = form.name.data.strip()
+    phone = form.phone.data.strip()
+    ssh_key = form.ssh_key.data.strip()
+
+    # before proceeding, check that all fields are sane
+    valid = {
+        'username': re.match(username_re, username),
+        'name' : re.match(gecos_re, name),
+        'phone' : re.match(gecos_re, phone),
+        'ssh_key': re.match(ssh_key_re, ssh_key)
+    }
+
+    if not all(valid.values()):
+        if not valid['username']:
+            flash("I don't like the look of your username.")
+
+        if not valid['name']:
+            flash("I prefer names consisting only of alphanumerics, apostrophes, and periods.")
+
+        if not valid['phone']:
+            flash("Your phone number looks weird to me.  Try sticking to the basics.")
+
+        if not valid['ssh_key']:
+            flash("Are you sure that's an SSH key? Please check the entry and dial again.")
+
+        return render_template('signup.tmpl', form=form)
+
+    if in_blacklist(username):
+        flash('You are blacklisted.')
+        return render_template('signup.tmpl', form=form)
+
+    if create_user(username, name, '', '', phone):
+        flash('There was an error creating a user account for you.')
+        return render_template('signup.tmpl', form=form)
+
+    if add_ssh_key(username, ssh_key):
+        flash('Something went wrong when adding your ssh key.')
+        return render_template('signup.tmpl', form=form)
+
+    # Success!
+    return render_template('success.tmpl')
 
 
 @app.route('/add_key', methods=['POST'])
