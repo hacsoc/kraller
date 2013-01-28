@@ -67,22 +67,23 @@ def in_blacklist(name):
 
 @app.route('/login')
 def login():
-    if 'ticket' in request.args and 'redirect_to' in request.args:
-        ticket = request.args.get('ticket')
-        redirect_to = request.args.get('redirect_to')
-        r = requests.get(app.config['CAS_SERVER_ENDPOINT'] + 'validate', params=dict(service=my_cas_endpoint(redirect_to), ticket=ticket), verify=True)
-        if not r.status_code == requests.codes.ok:
-            # TODO: do we have logging of any sort?
-            return abort(500)
-        response_lines = r.text.splitlines()
-        if len(response_lines) != 2:
-            return abort(500)
-        (answer, username) = response_lines
-        if answer == 'yes':
-            # set cookie and redirect
-            session['username'] = username
-            return redirect(redirect_to)
-    return abort(401)
+    if not 'ticket' in request.args and 'redirect_to' in request.args:
+        return abort(401)
+
+    ticket = request.args.get('ticket')
+    redirect_to = request.args.get('redirect_to')
+    r = requests.get(app.config['CAS_SERVER_ENDPOINT'] + 'validate', params=dict(service=my_cas_endpoint(redirect_to), ticket=ticket), verify=True)
+    if not r.status_code == requests.codes.ok:
+        # TODO: do we have logging of any sort?
+        return abort(500)
+    response_lines = r.text.splitlines()
+    if len(response_lines) != 2:
+        return abort(500)
+    (answer, username) = response_lines
+    if answer == 'yes':
+        # set cookie and redirect
+        session['username'] = username
+        return redirect(redirect_to)
 
 
 @app.route('/logout')
