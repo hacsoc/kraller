@@ -127,12 +127,15 @@ def signup():
         ]):
             if in_blacklist(username):
                 flash('You are blacklisted.')
+                return render_template('signup.tmpl', form=form)
 
             if create_user(username, name, '', '', phone):
                 flash('There was an error creating that user.')
+                return render_template('signup.tmpl', form=form)
 
             if add_ssh_key(username, ssh_key):
                 flash('Something went wrong when adding that ssh key.')
+                return render_template('signup.tmpl', form=form)
 
             # Success!
             return render_template('success.tmpl')
