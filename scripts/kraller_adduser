@@ -1,3 +1,3 @@
 #!/bin/bash
-adduser --disabled-password --quiet --gecos ${1} --ingroup users ${2}
-setquota ${2} 204800 204800 0 0 /home
+sudo adduser --disabled-password --quiet --gecos "${1}" --ingroup users "${2}"
+setquota "${2}" 204800 204800 0 0 /home
