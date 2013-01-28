@@ -29,8 +29,8 @@ def add_ssh_key(username, ssh_key):
 
 
 def change_gecos(username, gecos):
-    return subprocess.call(['sudo', '-n', 'usermod', '-c', gecos, username])
+    return call(['sudo', '-n', 'usermod', '-c', gecos, username])
 
 
 def change_shell(username, shell):
-    return subprocess.call(['sudo', '-n', 'usermod', '-s', shells[shell], username])
+    return call(['sudo', '-n', 'usermod', '-s', shells[shell], username])
