@@ -15,7 +15,7 @@
               <h1 class="hidden-phone">{% block whatdo %} Get Started! {% endblock %}</h1>
               <h2><small>Welcome to the</small> ACM<span class="atfix">@</span>CWRU <small>People Server</small></h2>
               {% if 'username' in session %}
-                <a class="bottom" href="{{ url_for('logout') }}">Logout</a>
+                <a class="bottom btn btn-warning" href="{{ url_for('logout') }}">Logout</a>
               {% endif %}
           </div>
       </div>

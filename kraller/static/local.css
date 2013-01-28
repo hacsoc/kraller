@@ -1,5 +1,6 @@
 .bighead {
-    padding: 60px;
+    padding-top: 40px;
+    padding-bottom: 5px;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
@@ -33,14 +34,8 @@
 }
 
 .bighead .bottom {
-    height: 0px;
-    padding: 0px;
     margin: 0px;
-    top: 38px;
     float: right;
-    position: relative;
-    color: #fff;
-    text-decoration: none;
 }
 
 @media (max-width: 767px) {
