@@ -27,15 +27,28 @@ username_re = "[a-z]{3}[0-9]*"
 gecos_re = "[A-Za-z0-9.' ()+-]"
 ssh_key_re = "[A-Za-z0-9@: .\/=+-]"
 
-
 def my_cas_endpoint(redirect_to=None):
+    """returns the URL that should be passed to the CAS server under the
+    'service' parameter.  It's where the CAS server should redirect the user
+    after it has done its job"""
+
     if redirect_to is None:
         redirect_to = request.path
     return url_for('login', redirect_to=redirect_to, _external=True)
 
 
-def cas_login_url():
-    return app.config['CAS_SERVER_ENDPOINT'] + 'login?' + urlencode(dict(service=my_cas_endpoint('signup'), renew='true'))
+def cas_login_url(redirect_to=None):
+    """returns a URL for the CAS server to send the user to.  Once done,
+    the CAS server will send the user back to redirect_to."""
+
+    return app.config['CAS_SERVER_ENDPOINT'] + 'login?' + urlencode(dict(service=my_cas_endpoint(redirect_to), renew='true'))
+
+
+def logged_in_url(url):
+    if 'username' in session:
+        return url
+    else:
+        return cas_login_url(url)
 
 
 def requires_auth(f):
@@ -80,7 +93,7 @@ def logout():
 
 @app.route('/')
 def index():
-    return render_template('index.tmpl', cas_server=cas_login_url())
+    return render_template('index.tmpl', signup_url=logged_in_url('/signup'))
 
 
 class SignupForm(Form):
