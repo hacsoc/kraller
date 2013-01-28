@@ -10,7 +10,7 @@ from functools import wraps
 import re
 from urllib import urlencode
 
-from flask import Flask, abort, render_template, redirect, request, session, url_for, flash
+from flask import Flask, abort, render_template, redirect, request, session, url_for, flash, send_from_directory
 from flask.ext.wtf import Form, BooleanField, TextField, TextAreaField, Required
 import requests
 
@@ -131,6 +131,12 @@ def signup():
 @requires_auth
 def add_key():
     pass
+
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                                   'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 
 """
