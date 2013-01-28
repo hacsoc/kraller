@@ -127,11 +127,11 @@ def signup():
                 return render_template('signup.tmpl', form=form)
 
             if create_user(username, name, '', '', phone):
-                flash('There was an error creating that user.')
+                flash('There was an error creating a user account for you')
                 return render_template('signup.tmpl', form=form)
 
             if add_ssh_key(username, ssh_key):
-                flash('Something went wrong when adding that ssh key.')
+                flash('Something went wrong when adding your ssh key.')
                 return render_template('signup.tmpl', form=form)
 
             # Success!
