@@ -18,7 +18,11 @@
             instructions for how to do this <a href="https://help.github.com/articles/generating-ssh-keys">on github</a>.
         </div>
         <div class="span12">
-        <a class="btn btn-primary btn-block btn-large" href='{{ signup_url }}'>Sign up here!</a>
+        {% if user %}
+          <a class="btn btn-primary btn-block btn-large" href='/add_key'>Add a key!</a>
+        {% else %}
+          <a class="btn btn-primary btn-block btn-large" href='{{ signup_url }}'>Sign up here!</a>
+        {% endif %}
         </div>
     </div>
 </div>

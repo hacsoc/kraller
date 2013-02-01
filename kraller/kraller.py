@@ -109,7 +109,8 @@ def logout():
 
 @app.route('/')
 def index():
-    return render_template('index.tmpl', signup_url=logged_in_url('/signup'))
+    user = ('username' in session) and not try_getpwnam(session['username'])
+    return render_template('index.tmpl', signup_url=logged_in_url('/signup'),user=user)
 
 
 class SignupForm(Form):
@@ -133,8 +134,7 @@ def signup():
                 form = SignupForm()
                 return render_template('signup.tmpl', form=form)
             else:
-                # the user already has an account
-                return render_template('add_key.tmpl')
+                return redirect('/add_key')
 
     username = session['username']
     if try_getpwnam(username):
@@ -196,6 +196,15 @@ def signup():
 @app.route('/add_key', methods=['POST'])
 @requires_auth
 def add_key():
+    if request.method == 'GET':
+        if 'username' in session:
+            username = session['username']
+            # the user is logged in
+            if not try_getpwnam(username):
+                return redirect('/signup')
+            else:
+                form = AddKeyForm()
+                return render_template('add_key.tmpl')
     username = session['username']
     form = AddKeyForm()
     if not form.validate_on_submit():
@@ -218,12 +227,12 @@ def add_key():
         if not valid['ssh_key']:
             flash("Are you sure that's an SSH key? Please check the entry and dial again.")
 
-        return render_template('signup.tmpl', form=form)
+        return render_template('add_key.tmpl', form=form)
 
     if add_ssh_key(username, ssh_key):
         app.logger.warning('Error adding ssh key')
         flash('Something went wrong when adding your ssh key.')
-        return render_template('signup.tmpl', form=form)
+        return render_template('add_key.tmpl', form=form)
 
     # Success!
     return render_template('success.tmpl')
