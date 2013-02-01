@@ -118,6 +118,8 @@ class SignupForm(Form):
     ssh_key = TextAreaField('SSH Key', [Required()])
     accept_tos = BooleanField(None, [Required()])
 
+class AddKeyForm(Form):
+    ssh_key = TextAreaField('SSH Key', [Required()])
 
 @app.route('/signup', methods=['GET', 'POST'])
 @requires_auth
@@ -194,7 +196,37 @@ def signup():
 @app.route('/add_key', methods=['POST'])
 @requires_auth
 def add_key():
-    pass
+    username = session['username']
+    form = AddKeyForm()
+    if not form.validate_on_submit():
+        flash('There was an error submitting the form!')
+        return render_template('signup.tmpl', form=form)
+
+    ssh_key = form.ssh_key.data.strip()
+
+    # before proceeding, check that all fields are sane
+    valid = {
+        'username': re.match(username_re, username),
+        'ssh_key': re.match(ssh_key_re, ssh_key)
+    }
+
+    if not all(valid.values()):
+        if not valid['username']:
+            flash("I don't like the look of your username.")
+            app.logger.warning('Username failed validation.  Why is this happening?')
+
+        if not valid['ssh_key']:
+            flash("Are you sure that's an SSH key? Please check the entry and dial again.")
+
+        return render_template('signup.tmpl', form=form)
+
+    if add_ssh_key(username, ssh_key):
+        app.logger.warning('Error adding ssh key')
+        flash('Something went wrong when adding your ssh key.')
+        return render_template('signup.tmpl', form=form)
+
+    # Success!
+    return render_template('success.tmpl')
 
 
 @app.route('/favicon.ico')

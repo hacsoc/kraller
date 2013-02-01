@@ -1,1 +1,25 @@
-Add a key here
+{% extends "layout.tmpl" %}
+
+{% block whatdo %}Add a key!{% endblock %}
+
+{% block body %}
+<div class="container">
+    <form method="POST" action="/add_key">
+        {{ form.csrf_token }}
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-error"><strong>Uh oh.</strong> {{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <fieldset>
+        <legend>SSH</legend>
+        {{ form.ssh_key.label }} {{ form.ssh_key }}
+        </fieldset>
+        <fieldset>
+        <input class="btn" type="submit" value="Add key">
+        </fieldset>
+    </form>
+</div>
+{% endblock %}
