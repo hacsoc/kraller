@@ -200,7 +200,7 @@ def add_key():
     form = AddKeyForm()
     if not form.validate_on_submit():
         flash('There was an error submitting the form!')
-        return render_template('signup.tmpl', form=form)
+        return render_template('add_key.tmpl', form=form)
 
     ssh_key = form.ssh_key.data.strip()
 
