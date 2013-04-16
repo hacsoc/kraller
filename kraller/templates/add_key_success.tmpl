@@ -1,0 +1,22 @@
+{% extends "layout.tmpl" %}
+
+{% block whatdo %}Yipee!{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-info"><strong>Hey!</strong> {{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <div class="hero-unit">
+        <h2>You've successfully added another key to your account on the server!</h2>
+        <p>Hop to it!  Get in your shell and login! <small> but before you go, be sure to <a href='/logout'>log out</a> of this app. </small></p>
+        <div>
+            <p>You can now login to <code>acm-people.case.edu</code> on port 22 with whatever ssh client you like!</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

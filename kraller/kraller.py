@@ -193,7 +193,7 @@ def signup():
     return render_template('success.tmpl')
 
 
-@app.route('/add_key', methods=['POST'])
+@app.route('/add_key', methods=['POST','GET'])
 @requires_auth
 def add_key():
     if request.method == 'GET':
@@ -204,7 +204,7 @@ def add_key():
                 return redirect('/signup')
             else:
                 form = AddKeyForm()
-                return render_template('add_key.tmpl')
+                return render_template('add_key.tmpl', form=form)
     username = session['username']
     form = AddKeyForm()
     if not form.validate_on_submit():
@@ -235,7 +235,7 @@ def add_key():
         return render_template('add_key.tmpl', form=form)
 
     # Success!
-    return render_template('success.tmpl')
+    return render_template('add_key_success.tmpl')
 
 
 @app.route('/favicon.ico')
