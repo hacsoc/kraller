@@ -14,7 +14,9 @@ import re
 from urllib import urlencode
 
 from flask import Flask, abort, render_template, redirect, request, session, url_for, flash, send_from_directory
-from flask.ext.wtf import Form, BooleanField, TextField, TextAreaField, Required
+from flask.ext.wtf import Form
+from wtforms import BooleanField, TextField, TextAreaField
+from wtforms.validators import Required
 import requests
 
 from itsdangerous_session import ItsDangerousSessionInterface
